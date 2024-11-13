@@ -1,5 +1,15 @@
 import mongoose, {Schema, Document} from "mongoose";
 
+export interface User extends Document{
+    userName: string;
+    email: string;
+    password: string;
+    verifyCode: string;
+    verifyCodeExpiry: Date;
+    isVerified: boolean;
+    history: History[];
+}
+
 export interface History extends Document{
     content: string;
     createdAt: Date;
@@ -16,16 +26,6 @@ const HistorySchema: Schema<History> = new Schema({
         default: Date.now
     }
 })
-
-export interface User extends Document{
-    userName: string;
-    email: string;
-    password: string;
-    verifyCode: string;
-    verifyCodeExpiry: Date;
-    isVerified: boolean;
-    history: History[];
-}
 
 const UserSchema: Schema<User> = new Schema({
     userName: {
@@ -59,6 +59,7 @@ const UserSchema: Schema<User> = new Schema({
     history: [HistorySchema]
     
 })
+
 
 const UserModel = (mongoose.models.User as mongoose.Model<User>) || mongoose.model<User>("User", UserSchema);
 
