@@ -1,0 +1,29 @@
+datasource db {
+  provider = "postgresql" // Or your chosen database
+  url      = env("DATABASE_URL") // URL defined in .env file
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id               Int       @id @default(autoincrement()) // Auto-incrementing primary key
+  userName         String    @unique                      // Unique username
+  email            String    @unique                      // Unique email
+  password         String                                 // User's password
+  verifyCode       String                                 // Verification code
+  verifyCodeExpiry DateTime                               // Expiry date of the verification code
+  isVerified       Boolean   @default(false)              // Is the user verified?
+  history          History[]                              // One-to-many relationship with History
+  createdAt        DateTime  @default(now())              // Automatically capture user creation timestamp
+  updatedAt        DateTime  @updatedAt                   // Automatically capture update timestamp
+}
+
+model History {
+  id        Int      @id @default(autoincrement())         // Auto-incrementing primary key
+  content   String                                         // History content
+  createdAt DateTime @default(now())                      // Automatically capture creation timestamp
+  userId    Int                                           // Foreign key to associate with User
+  user      User     @relation(fields: [userId], references: [id]) // Relationship to User
+}
